@@ -23,7 +23,11 @@ def test_export_rocrate_metadata_writes_file(tmp_path: Path) -> None:
         "formats": ["csv"],
         "files": [
             {"path": "profiles.csv", "url": "https://example.org/profiles.csv"},
-            {"path": "images", "kind": "directory", "url": "https://example.org/images"},
+            {
+                "path": "images",
+                "kind": "directory",
+                "url": "https://example.org/images",
+            },
         ],
         "relationships": [
             {

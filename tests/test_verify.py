@@ -90,7 +90,9 @@ def test_verify_accepts_custom_metadata_objects(tmp_path: Path) -> None:
 
     assert result.ok is False
     assert any("missing local file" in issue for issue in result.issues)
-    assert not any("custom_metadata must be an object" in issue for issue in result.issues)
+    assert not any(
+        "custom_metadata must be an object" in issue for issue in result.issues
+    )
 
 
 def test_verify_rejects_invalid_custom_metadata_type(tmp_path: Path) -> None:
@@ -237,7 +239,9 @@ def test_verify_rejects_relationship_missing_rocrate_predicate(tmp_path: Path) -
     result = verify_datasets(manifests_dir=manifests_dir, data_dir=tmp_path / "data")
 
     assert result.ok is False
-    assert any("missing required 'rocrate_predicate'" in issue for issue in result.issues)
+    assert any(
+        "missing required 'rocrate_predicate'" in issue for issue in result.issues
+    )
 
 
 def test_verify_rejects_relationship_non_uri_rocrate_predicate(tmp_path: Path) -> None:
@@ -270,4 +274,6 @@ def test_verify_rejects_relationship_non_uri_rocrate_predicate(tmp_path: Path) -
     result = verify_datasets(manifests_dir=manifests_dir, data_dir=tmp_path / "data")
 
     assert result.ok is False
-    assert any("rocrate_predicate must be an absolute URI" in issue for issue in result.issues)
+    assert any(
+        "rocrate_predicate must be an absolute URI" in issue for issue in result.issues
+    )

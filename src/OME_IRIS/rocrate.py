@@ -78,6 +78,8 @@ def write_rocrate_metadata(manifest: dict, data_dir: Path) -> Path:
     return out_path
 
 
-def export_rocrate_metadata(manifests_dir: Path, dataset_id: str, data_dir: Path) -> Path:
+def export_rocrate_metadata(
+    manifests_dir: Path, dataset_id: str, data_dir: Path
+) -> Path:
     manifest = _load_manifest(manifests_dir, dataset_id)
     return write_rocrate_metadata(manifest, data_dir)

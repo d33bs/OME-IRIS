@@ -64,7 +64,10 @@ def _is_valid_metadata_value(value: object) -> bool:
     if isinstance(value, list):
         return all(_is_valid_metadata_value(item) for item in value)
     if isinstance(value, dict):
-        return all(isinstance(key, str) and _is_valid_metadata_value(item) for key, item in value.items())
+        return all(
+            isinstance(key, str) and _is_valid_metadata_value(item)
+            for key, item in value.items()
+        )
     return False
 
 
@@ -79,7 +82,9 @@ def _validate_custom_metadata(payload: dict, owner: str, issues: list[str]) -> N
         issues.append(f"{owner}: custom_metadata contains unsupported value types")
 
 
-def _validate_relationships(manifest: dict, manifest_name: str, issues: list[str]) -> None:
+def _validate_relationships(
+    manifest: dict, manifest_name: str, issues: list[str]
+) -> None:
     relationships = manifest.get("relationships")
     if relationships is None:
         return
@@ -127,11 +132,15 @@ def verify_datasets(manifests_dir: Path, data_dir: Path) -> VerifyResult:
     for manifest_path, manifest in _load_manifests(manifests_dir):
         missing = REQUIRED_FIELDS.difference(manifest.keys())
         if missing:
-            issues.append(f"{manifest_path.name}: missing required fields: {sorted(missing)}")
+            issues.append(
+                f"{manifest_path.name}: missing required fields: {sorted(missing)}"
+            )
             continue
         source_identifier = str(manifest.get("source_identifier", "")).strip()
         if not source_identifier:
-            issues.append(f"{manifest_path.name}: source_identifier must be a non-empty string")
+            issues.append(
+                f"{manifest_path.name}: source_identifier must be a non-empty string"
+            )
             continue
 
         _validate_custom_metadata(manifest, manifest_path.name, issues)
@@ -142,7 +151,9 @@ def verify_datasets(manifests_dir: Path, data_dir: Path) -> VerifyResult:
 
         for file_rec in manifest.get("files", []):
             if isinstance(file_rec, dict):
-                _validate_custom_metadata(file_rec, f"{manifest_path.name}:file", issues)
+                _validate_custom_metadata(
+                    file_rec, f"{manifest_path.name}:file", issues
+                )
             kind = file_rec.get("kind", "file")
             rel_path = file_rec.get("path")
             if not rel_path:
@@ -151,7 +162,11 @@ def verify_datasets(manifests_dir: Path, data_dir: Path) -> VerifyResult:
             target = data_dir / source_identifier / rel_path
             reported_path = f"{source_identifier}/{rel_path}"
             if kind == "directory":
-                if not target.exists() or not target.is_dir() or not any(target.iterdir()):
+                if (
+                    not target.exists()
+                    or not target.is_dir()
+                    or not any(target.iterdir())
+                ):
                     issues.append(f"{reported_path}: missing local directory content")
                 continue
 
@@ -176,7 +191,9 @@ def main() -> int:
     parser.add_argument("--data-dir", default="data")
     args = parser.parse_args()
 
-    result = verify_datasets(manifests_dir=Path(args.manifests_dir), data_dir=Path(args.data_dir))
+    result = verify_datasets(
+        manifests_dir=Path(args.manifests_dir), data_dir=Path(args.data_dir)
+    )
     if result.ok:
         print("Verification passed")
         return 0

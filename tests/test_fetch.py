@@ -62,7 +62,9 @@ def test_fetch_filters_by_dataset_id(tmp_path: Path) -> None:
 def test_fetch_skips_existing_file_when_checksum_not_provided(tmp_path: Path) -> None:
     manifests_dir = tmp_path / "datasets"
     manifests_dir.mkdir()
-    write_manifest(manifests_dir / "a.yaml", "a", url="https://example.org/profiles.csv")
+    write_manifest(
+        manifests_dir / "a.yaml", "a", url="https://example.org/profiles.csv"
+    )
 
     existing = tmp_path / "data" / "a" / "profiles.csv"
     existing.parent.mkdir(parents=True)
@@ -143,7 +145,9 @@ def test_fetch_traverses_local_directory_source(tmp_path: Path) -> None:
 
     assert result.downloaded == 1
     assert (tmp_path / "data" / "jump-plate" / "images" / "A01.tiff").exists()
-    assert (tmp_path / "data" / "jump-plate" / "images" / "nested" / "A02.tiff").exists()
+    assert (
+        tmp_path / "data" / "jump-plate" / "images" / "nested" / "A02.tiff"
+    ).exists()
 
 
 def test_fetch_writes_dataset_rocrate_json(tmp_path: Path) -> None:

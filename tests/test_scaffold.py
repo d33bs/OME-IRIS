@@ -13,7 +13,9 @@ def test_scaffold_creates_manifest_and_guesses_fields(tmp_path: Path) -> None:
     (source / "cells.csv").write_text("a,b\n1,2\n", encoding="utf-8")
 
     manifests_dir = tmp_path / "manifests"
-    result = scaffold_dataset_manifest(source_path=str(source), manifests_dir=manifests_dir)
+    result = scaffold_dataset_manifest(
+        source_path=str(source), manifests_dir=manifests_dir
+    )
 
     assert result.dataset_id == "jump-plate-br00117006"
     assert result.manifest_path.exists()
@@ -60,7 +62,9 @@ def test_scaffold_can_include_directory_entry(tmp_path: Path) -> None:
     )
 
     data = yaml.safe_load(result.manifest_path.read_text(encoding="utf-8"))
-    directory_entries = [item for item in data["files"] if item.get("kind") == "directory"]
+    directory_entries = [
+        item for item in data["files"] if item.get("kind") == "directory"
+    ]
     assert len(directory_entries) == 1
     assert directory_entries[0]["path"] == "images"
     assert directory_entries[0]["archive_format"] == "tar"

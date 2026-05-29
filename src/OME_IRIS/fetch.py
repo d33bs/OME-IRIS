@@ -82,14 +82,20 @@ def _download(url: str, target: Path, silent: bool = False) -> None:
     urlretrieve(url, str(target))  # nosec B310
 
 
-def _extract_archive(archive_path: Path, target_dir: Path, archive_format: str | None = None) -> None:
+def _extract_archive(
+    archive_path: Path, target_dir: Path, archive_format: str | None = None
+) -> None:
     target_dir.mkdir(parents=True, exist_ok=True)
     fmt = archive_format
     if fmt is None:
         suffixes = "".join(archive_path.suffixes).lower()
         if suffixes.endswith(".zip"):
             fmt = "zip"
-        elif suffixes.endswith(".tar.gz") or suffixes.endswith(".tgz") or suffixes.endswith(".tar"):
+        elif (
+            suffixes.endswith(".tar.gz")
+            or suffixes.endswith(".tgz")
+            or suffixes.endswith(".tar")
+        ):
             fmt = "tar"
         else:
             raise ValueError(f"Unable to infer archive format for {archive_path.name}")
@@ -131,7 +137,9 @@ def _parse_github_tree_url(url: str) -> tuple[str, str, str, str] | None:
     return owner, repo, ref, subtree
 
 
-def _download_directory_github_tree(tree_url: str, target_dir: Path, silent: bool = False) -> int:
+def _download_directory_github_tree(
+    tree_url: str, target_dir: Path, silent: bool = False
+) -> int:
     parsed = _parse_github_tree_url(tree_url)
     if parsed is None:
         raise ValueError(f"Unsupported directory URL: {tree_url}")
@@ -142,7 +150,8 @@ def _download_directory_github_tree(tree_url: str, target_dir: Path, silent: boo
     tree_entries = payload.get("tree", [])
     prefix = f"{subtree.rstrip('/')}/"
     matching_blobs = [
-        entry for entry in tree_entries
+        entry
+        for entry in tree_entries
         if entry.get("type") == "blob" and str(entry.get("path", "")).startswith(prefix)
     ]
     if not matching_blobs:
@@ -152,7 +161,7 @@ def _download_directory_github_tree(tree_url: str, target_dir: Path, silent: boo
     count = 0
     for entry in matching_blobs:
         blob_path = str(entry["path"])
-        relative = blob_path[len(prefix):]
+        relative = blob_path[len(prefix) :]
         raw_url = f"https://raw.githubusercontent.com/{owner}/{repo}/{ref}/{blob_path}"
         destination = target_dir / relative
         _download(raw_url, destination, silent=silent)
@@ -192,7 +201,7 @@ def fetch_datasets(
     for manifest in manifests:
         source_identifier = str(manifest.get("source_identifier", "")).strip()
         if not source_identifier:
-            failed.append(f'{manifest.get("id", "unknown")}: missing source_identifier')
+            failed.append(f"{manifest.get('id', 'unknown')}: missing source_identifier")
             continue
         dataset_dir = data_dir / source_identifier
         write_rocrate_metadata(manifest, data_dir)
@@ -215,7 +224,9 @@ def fetch_datasets(
                         skipped += 1
                         skipped_items.append(reported_path)
                         continue
-                    if file_rec.get("archive_format") or url.lower().endswith((".zip", ".tar", ".tar.gz", ".tgz")):
+                    if file_rec.get("archive_format") or url.lower().endswith(
+                        (".zip", ".tar", ".tar.gz", ".tgz")
+                    ):
                         with tempfile.TemporaryDirectory() as temp_dir:
                             archive_name = Path(url).name or "archive"
                             archive_path = Path(temp_dir) / archive_name
