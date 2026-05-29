@@ -29,7 +29,7 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
-            "url": "https://github.com/bioio-devs/OME-IRIS",
+            "url": "https://github.com/d33bs/OME-IRIS",
             "icon": "fa-brands fa-github",
         },
     ],
