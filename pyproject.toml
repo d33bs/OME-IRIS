@@ -35,6 +35,21 @@ docs = [
   "sphinx>=8.2.3",
 ]
 
+[tool.setuptools]
+package-dir = { "" = "src" }
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = [ "src" ]
+include = [ "OME_IRIS*" ]
+
+[tool.setuptools.package-data]
+OME_IRIS = [
+  "data/*.yaml",
+  "data/*.csv",
+  "data/datasets/*.yaml",
+]
+
 [tool.pytest.ini_options]
 pythonpath = [ "src" ]
 addopts = [ "-q" ]
