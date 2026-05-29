@@ -46,8 +46,21 @@ def _select_downloader() -> str | None:
 
 
 def _download(url: str, target: Path, silent: bool = False) -> None:
-    downloader = _select_downloader()
     target.parent.mkdir(parents=True, exist_ok=True)
+    parsed = urlparse(url)
+
+    # Handle local file URIs/paths without external download tools.
+    if parsed.scheme == "file":
+        source_path = Path(parsed.path)
+        shutil.copy2(source_path, target)
+        return
+    if parsed.scheme == "":
+        local_path = Path(url)
+        if local_path.exists() and local_path.is_file():
+            shutil.copy2(local_path, target)
+            return
+
+    downloader = _select_downloader()
     if downloader == "aria2c":
         cmd = ["aria2c", "-o", target.name, "-d", str(target.parent), url]
         if silent:
