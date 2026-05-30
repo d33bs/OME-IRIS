@@ -22,7 +22,7 @@ jobs:
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@v8.1.0
       # use prek for speedy precommit results
-      - uses: j178/prek-action@v2.0.3
+      - uses: j178/prek-action@v2.0.4
       # run pre-commit ci lite for automated fixes
       - uses: pre-commit-ci/lite-action@v1.1.0
         if: ${{ !cancelled() }}
